@@ -1,7 +1,9 @@
-use image::{ImageBuffer, ImageResult, RgbaImage, Pixel};
+use image::{ImageBuffer, ImageResult, Pixel, RgbaImage};
 
 mod shiterators;
 use shiterators::*;
+
+pub mod bezier;
 
 pub fn rectangle(p1: (i32, i32), p2: (i32, i32)) -> Rectangle {
     let (x, y) = p1;
@@ -71,13 +73,15 @@ impl Limage {
     pub fn put_rgb(&mut self, p: (i32, i32), color: [u8; 3]) {
         if self.in_bounds(p) {
             let (x, y) = p;
-            self.imgbuff.put_pixel(x as u32, y as u32, image::Rgb(color).to_rgba());
+            self.imgbuff
+                .put_pixel(x as u32, y as u32, image::Rgb(color).to_rgba());
         }
     }
     pub fn put_rgba(&mut self, p: (i32, i32), color: [u8; 4]) {
         if self.in_bounds(p) {
             let (x, y) = p;
-            self.imgbuff.put_pixel(x as u32, y as u32, image::Rgba(color));
+            self.imgbuff
+                .put_pixel(x as u32, y as u32, image::Rgba(color));
         }
     }
     pub fn get_rgba(&self, p: (i32, i32)) -> Option<[u8; 4]> {
@@ -88,7 +92,10 @@ impl Limage {
         None
     }
     pub fn paste(&mut self, position: (i32, i32), other: &Limage) {
-        for p in rectangle((0, 0), (other.width() as i32 -1, other.height() as i32 -1)) {
+        for p in rectangle(
+            (0, 0),
+            (other.width() as i32 - 1, other.height() as i32 - 1),
+        ) {
             let pos = (position.0 + p.0, position.1 + p.1);
             if self.in_bounds(pos) {
                 let old_color = self.get_rgba(pos).unwrap();
